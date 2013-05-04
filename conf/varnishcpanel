@@ -15,7 +15,7 @@ LYNX="lynx -dump"
 PORT="$(grep 'apache_port=' /var/cpanel/cpanel.config 2>/dev/null | sed -e 's/.*=\([.0-9]*:\)\{0,1\}//;' -e 's/[^0-9]*//g' 2>/dev/null)"
 STATUSURL="http://localhost:${PORT:-80}/whm-server-status"
 progh=$(basename $HTTPD)
-prog="apachebooster"
+prog="varnishcpanel"
 progv=$(basename $varnish)
 
 

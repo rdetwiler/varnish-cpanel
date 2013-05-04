@@ -44,5 +44,5 @@ sed -i 's/.*varnish.*//g' /etc/chkserv.d/chkservd.conf
 
 sed -i '/\/etc\/init.*.varnish/d' /etc/init.d/httpd
 sed -i '/\/etc\/init.*.varnish/d' /usr/local/apache/bin/apachectl
-chkconfig apachebooster off
+chkconfig varnishcpanel off
 /scripts/restartsrv_httpd

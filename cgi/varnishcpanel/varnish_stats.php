@@ -1,16 +1,16 @@
 <?
 function varnish_stats($stats){
-$handle = popen("$stats", 'r');
-while(!feof($handle)) {
+
+  $handle = popen("$stats", 'r');
+
+  while(!feof($handle)) {
     $ret = fgets($handle);
     echo "$ret<br/>\n";
     ob_flush();
     flush();
-        }
-pclose($handle);
+  }
+  pclose($handle);
 }
-
-
 
 print('
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -28,7 +28,7 @@ print('
 <center><A HREF="javascript:history.go(0)"><b>Refresh</b></A></center>
 <strong>Varnish Memory Usage: </strong>
 <br /><br />
-<?php $mem = varnish_stats("echo $(/bin/ps -u varnish -o rss | /usr/bin/awk '{sum+=$1} END {print sum}') KBytes");?>
+<?php $mem = varnish_stats("echo $(/bin/ps -u varnish -o rss | /usr/bin/awk '{sum+=$1} END {print sum}') KBytes"); ?>
 <br /><br />
 <strong>Varnish Stats: </strong><br />
 

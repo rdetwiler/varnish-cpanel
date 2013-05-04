@@ -5,6 +5,6 @@ if (req.url ~ "user") { set req.http.connection = "close"; return (pipe); }
 if (req.url ~ "cron\.php") { set req.http.connection = "close"; return (pipe); }
 if (req.url ~ "edit") { set req.http.connection = "close"; return (pipe); }
 if (req.url ~ "test\.html") { set req.http.connection = "close"; return (pipe); }
-if (req.url ~ "test\.html") { set req.http.connection = "close"; return (pipe); }
+if (req.url ~ "install\.php") { set req.http.connection = "close"; return (pipe); }
 if (req.url ~ "admin") { set req.http.connection = "close"; return (pipe); }
 if (req.url ~ "nocache") { set req.http.connection = "close"; return (pipe); }

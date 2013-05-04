@@ -1,13 +1,18 @@
 <?php
 
 error_reporting(1);
-define(BUF_SIZ, 2048);        # max buffer size
-define(FD_WRITE, 0);        # stdin
-define(FD_READ, 1);        # stdout
-define(FD_ERR, 2);        # stderr
 
+# max buffer size
+define(BUF_SIZ, 2048);
 
+# stdin
+define(FD_WRITE, 0);
 
+# stdout
+define(FD_READ, 1);
+
+# stderr
+define(FD_ERR, 2);
 
 function retrieve_current_ttl() {
 	tune_varnish("/bin/bash /scripts/getfilettl -f");
@@ -22,73 +27,82 @@ function retrieve_current_bin() {
 }
 
 
-function proc_exec($cmd)
-{
-    $descriptorspec = array(
-        0 => array("pipe", "r"),
-        1 => array("pipe", "w"),
-        2 => array("pipe", "w")
-    );
+function proc_exec($cmd) {
+  $descriptorspec = array(
+    0 => array("pipe", "r"),
+    1 => array("pipe", "w"),
+    2 => array("pipe", "w")
+  );
 
-    $ptr = proc_open($cmd, $descriptorspec, $pipes, NULL, $_ENV);
-    if (!is_resource($ptr))
-        return false;
+  $ptr = proc_open($cmd, $descriptorspec, $pipes, NULL, $_ENV);
+  if (!is_resource($ptr)) {
+    return false;
+  }
 
-    while (($buffer = fgets($pipes[FD_READ], BUF_SIZ)) != NULL
-            || ($errbuf = fgets($pipes[FD_ERR], BUF_SIZ)) != NULL) {
-        if (!isset($flag)) {
-            $pstatus = proc_get_status($ptr);
-            $first_exitcode = $pstatus["exitcode"];
-            $flag = true;
-        }
-        if (strlen($buffer))
-            echo $buffer;
-        if (strlen($errbuf))
-            echo "ERR: " . $errbuf;
+  while (($buffer = fgets($pipes[FD_READ], BUF_SIZ)) != NULL || ($errbuf = fgets($pipes[FD_ERR], BUF_SIZ)) != NULL) {
+    if (!isset($flag)) {
+      $pstatus = proc_get_status($ptr);
+      $first_exitcode = $pstatus["exitcode"];
+      $flag = true;
     }
 
-    foreach ($pipes as $pipe)
-        fclose($pipe);
-
-    /* Get the expected *exit* code to return the value */
-    $pstatus = proc_get_status($ptr);
-    if (!strlen($pstatus["exitcode"]) || $pstatus["running"]) {
-        /* we can trust the retval of proc_close() */
-        if ($pstatus["running"])
-            proc_terminate($ptr);
-        $ret = proc_close($ptr);
-    } else {
-        if ((($first_exitcode + 256) % 256) == 255
-                && (($pstatus["exitcode"] + 256) % 256) != 255)
-            $ret = $pstatus["exitcode"];
-        elseif (!strlen($first_exitcode))
-            $ret = $pstatus["exitcode"];
-        elseif ((($first_exitcode + 256) % 256) != 255)
-            $ret = $first_exitcode;
-        else
-            $ret = 0; /* we "deduce" an EXIT_SUCCESS ;) */
-        proc_close($ptr);
+    if (strlen($buffer)) {
+      echo $buffer;
     }
 
-    return ($ret + 256) % 256;
+    if (strlen($errbuf)) {
+      echo "ERR: " . $errbuf;
+    }
+  }
+
+  foreach ($pipes as $pipe) {
+    fclose($pipe);
+  }
+
+  /* Get the expected *exit* code to return the value */
+  $pstatus = proc_get_status($ptr);
+  if (!strlen($pstatus["exitcode"]) || $pstatus["running"]) {
+    /* we can trust the retval of proc_close() */
+    if ($pstatus["running"]) {
+      proc_terminate($ptr);
+    }
+
+    $ret = proc_close($ptr);
+  }
+  else {
+    if ((($first_exitcode + 256) % 256) == 255 && (($pstatus["exitcode"] + 256) % 256) != 255) {
+      $ret = $pstatus["exitcode"];
+    }
+    elseif (!strlen($first_exitcode)) {
+      $ret = $pstatus["exitcode"];
+    }
+    elseif ((($first_exitcode + 256) % 256) != 255) {
+      $ret = $first_exitcode;
+    }
+    else {
+      /* we "deduce" an EXIT_SUCCESS ;) */
+      $ret = 0;
+    }
+    proc_close($ptr);
+  }
+
+  return ($ret + 256) % 256;
 }
+
 function tune_varnish($action){
-	
-        proc_exec($action);
+  proc_exec($action);
 }
 
 function action_varnish($init){
-$handle = popen("$init", 'r');
-while(!feof($handle)) {
+  $handle = popen("$init", 'r');
+  while(!feof($handle)) {
     $ret = fgets($handle);
     echo "<b>$ret</b><br/>\n";
     ob_flush();
     flush();
-        }
-pclose($handle);
+  }
+  pclose($handle);
 }
-
-
 
 print('
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -103,8 +117,6 @@ print('
 
 ?>
 <p>
-
-
 <form action="tune_varnish.php" method="post">
 <strong>Dynamic File cache TTL&nbsp;&nbsp; </strong>(seconds):
 <input type="input" name="ttl" value="<?php retrieve_current_ttl(); ?>">
@@ -130,8 +142,8 @@ print('
 <textarea name='newd' cols='50%' rows='15'>
 <?php
 $flines=file("/usr/local/varnish/etc/varnish/exclude.url.tpl");
-foreach ($flines as $line_num => $line){
-echo $line;
+foreach ($flines as $line_num => $line) {
+ echo $line;
 }
 ?>
 </textarea>
@@ -152,29 +164,33 @@ echo $line;
 
 
 <?php
-if(isset($_POST['submit'])){
- $fh = fopen("/usr/local/varnish/etc/varnish/restart.file",'w' );
-fwrite($fh,1);
-fclose($fh);
-	if(isset($_POST['ttl'])) {
+if (isset($_POST['submit'])) {
+  $fh = fopen("/usr/local/varnish/etc/varnish/restart.file",'w' );
+  fwrite($fh,1);
+  fclose($fh);
+
+  if (isset($_POST['ttl'])) {
 		tune_varnish("/bin/bash /scripts/adjustwrap -cd " .  $_POST['ttl']);
 		echo "<meta http-equiv=refresh content=\"0; URL=tune_varnish.php\">";
 	}
-        if(isset($_POST['bin'])) {
-                tune_varnish("/bin/bash /scripts/adjustwrap -cb " .  $_POST['bin']);
+
+  if (isset($_POST['bin'])) {
+    tune_varnish("/bin/bash /scripts/adjustwrap -cb " .  $_POST['bin']);
 		echo "<meta http-equiv=refresh content=\"0; URL=tune_varnish.php\">";
-        }
-        if(isset($_POST['staticttl'])) {
-                tune_varnish("/bin/bash /scripts/adjustwrap -cs " .  $_POST['staticttl']);
-                echo "<meta http-equiv=refresh content=\"0; URL=tune_varnish.php\">";
-        }
- if(isset($_POST['newd'])) {
-           $fh = fopen("/usr/local/varnish/etc/varnish/exclude.url.tpl",'w' );
-fwrite($fh,$_POST['newd']);
-fclose($fh);
- tune_varnish("/bin/bash /scripts/varnishurlexlude");
-echo "<meta http-equiv=refresh content=\"0; URL=tune_varnish.php\">";
-}
+  }
+
+  if (isset($_POST['staticttl'])) {
+    tune_varnish("/bin/bash /scripts/adjustwrap -cs " .  $_POST['staticttl']);
+    echo "<meta http-equiv=refresh content=\"0; URL=tune_varnish.php\">";
+  }
+
+  if (isset($_POST['newd'])) {
+    $fh = fopen("/usr/local/varnish/etc/varnish/exclude.url.tpl",'w' );
+    fwrite($fh,$_POST['newd']);
+    fclose($fh);
+    tune_varnish("/bin/bash /scripts/varnishurlexlude");
+    echo "<meta http-equiv=refresh content=\"0; URL=tune_varnish.php\">";
+  }
 }
 
 ?>

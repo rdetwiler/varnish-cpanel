@@ -1,13 +1,13 @@
 <?php
 function rebuild($cmd){
-$handle = popen("$cmd", 'r');
-while(!feof($handle)) {
+  $handle = popen("$cmd", 'r');
+  while(!feof($handle)) {
     $buffer = fgets($handle);
     echo "$buffer<br/>\n";
     ob_flush();
     flush();
-        }
-pclose($handle);
+  }
+  pclose($handle);
 }
 
 
@@ -32,10 +32,9 @@ print('
 <strong><font color="#0570b9">Rebuild Varnish Configuration file and IP address pool</font></strong> <input type="submit" name="submit" value="Rebuild Now">
 </form>
 <?php
-if(isset($_POST['submit'])){
-echo "Rebuilding IP pool";
-rebuild("/scripts/genevarnishconf");
-
+if (isset($_POST['submit'])) {
+  echo "Rebuilding IP pool";
+  rebuild("/scripts/genevarnishconf");
 }
 ?>
 </p>

@@ -8,7 +8,7 @@ BEGIN { unshift @INC, '/usr/local/cpanel', '/scripts/'; }
 use VarnishCpanel;
 use Cpanel::DIp         ();
 use Cpanel::Logger;
-my $logger = Cpanel::Logger->new( { alternate_logfile => "/var/log/apachebooster.log" } );
+my $logger = Cpanel::Logger->new( { alternate_logfile => "/var/log/varnishcpanel.log" } );
 my $mainip = Cpanel::DIp::getmainip();
 my $mydomain = $ARGV[0];
 

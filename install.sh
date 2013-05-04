@@ -161,23 +161,16 @@ echo -e "$GREEN Backing up current version $RESET"
                $bin_cp -prf $varnish_prefix/etc/varnish /root/varnish-cpanel-archive/
                $bin_cp -prf $varnish_prefix/var /root/varnish-cpanel-archive/
                $bin_cp -prf /etc/sysconfig/varnish /root/varnish-cpanel-archive/sys.varnish
-               $bin_cp -prf /usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi /root/varnish-cpanel-archive/
-               $bin_cp -prf /usr/local/cpanel/whostmgr/cgi/nginx /root/varnish-cpanel-archive/nginx-cgi
                echo -e "Backup completed"
                echo " "
                echo " "
 clear
 echo -e "$GREEN Removing olde version $RESET"
-               $bin_rm -rvf /usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi
-               $bin_rm -rvf /usr/local/cpanel/whostmgr/cgi/nginx
                $bin_rm -rvf /scripts/postwwwacct
                $bin_rm -rvf /scripts/installmod-rpf
-               $bin_rm -rvf /scripts/installnginx
                $bin_rm -rvf /scripts/posteasyapache
                $bin_rm -rvf /scripts/preeasyapache
-               $bin_rm -rvf /scripts/rebuildnginxconf
                $bin_rm -rvf /scripts/rebuildvhost
-               $bin_rm -rvf /etc/ini.d/nginx
                $bin_rm -rvf /etc/init.d/varnish
                $bin_rm -rvf /etc/sysconfig/varnish
                $bin_rm -rvf /scripts/genevarnishconf
@@ -209,7 +202,6 @@ echo -e "$GREEN Installing scripts $RESET"
                chmod 700 scripts/* -R
                $bin_cp -prf  scripts/* /scripts/
                $bin_cp -prf  cgi/* /usr/local/cpanel/whostmgr/docroot/cgi/
-               wget -O /usr/local/cpanel/whostmgr/cgi/nginx/version.txt http://prajith.in/version.txt
 
 else
 clear
@@ -221,7 +213,6 @@ echo -e "$GREEN Installing scripts $RESET"
                chmod 700 scripts/* -R
                $bin_cp -prf  scripts/* /scripts/
                $bin_cp -prf  cgi/* /usr/local/cpanel/whostmgr/docroot/cgi/
-               wget -O /usr/local/cpanel/whostmgr/cgi/nginx/version.txt http://prajith.in/version.txt
 fi
 clear
 echo -e "$GREEN Installing WHM/cPanel hooks $RESET"
@@ -238,8 +229,6 @@ echo -e "$GREEN Installing WHM/cPanel hooks $RESET"
                /usr/local/cpanel/bin/manage_hooks  add script /scripts/postwwwacct --describe "Varnish for cPanel" --category Whostmgr --event Accounts::Create --stage post >/dev/null 2>&1
                /usr/local/cpanel/bin/manage_hooks  add script /scripts/prekillacct --describe "Varnish for cPanel" --category Whostmgr --event Accounts::Remove --stage pre >/dev/null 2>&1
 sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/varnish \$ARGV/g" /usr/local/apache/bin/apachectl
-sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/nginx \$ARGV/g" /usr/local/apache/bin/apachectl
-sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/nginx \$ARGV/g" /etc/init.d/httpd
 sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/varnish \$ARGV/g" /etc/init.d/httpd
 
 clear
@@ -252,25 +241,17 @@ echo -e "$GREEN Adding services to chksrvd $RESET"
                  cd $CUDIR
                  $bin_cp -prvf conf/chksrv.d/* /etc/chkserv.d/
                  echo "varnish:1" >> /etc/chkserv.d/chkservd.conf 
-                 echo "nginx:1" >> /etc/chkserv.d/chkservd.conf
                  sed -i "s/80/82/" /etc/chkserv.d/httpd
 clear
 echo -e "$GREEN Creating varnish system user $RESET"
                /usr/sbin/useradd varnish -s /sbin/nologin
 clear
-echo -e "$GREEN startig nginx installation $RESET"
+echo -e "$GREEN startig varnishcpanel installation $RESET"
                cd $CUDIR/packages/
-               tar -xf  nginx-$nVERSION.tar.gz
-               cd nginx-$nVERSION/
-               ./configure --prefix=/usr/local/nginx/ --with-http_realip_module   --http-proxy-temp-path=/tmp/nginx_proxy --http-fastcgi-temp-path=/tmp/nginx_fastcgi --http-client-body-temp-path=/tmp/nginx_client --with-http_stub_status_module &&  make  && make install
-               $bin_rm -rvf  /usr/local/nginx/conf/nginx.conf
-               $bin_cp -prf  $CUDIR/conf/nginx.conf /usr/local/nginx/conf/nginx.conf
-               $bin_cp -prf  $CUDIR/conf/nginx /etc/init.d/nginx
-               chmod 775 /etc/init.d/nginx
-               $bin_cp -prf  $CUDIR/conf/apachebooster /etc/init.d/apachebooster
-               chmod 775 /etc/init.d/apachebooster
-               chkconfig apachebooster on
-echo -e "$GREEN Nginx installation completed $RESET"
+               $bin_cp -prf  $CUDIR/conf/varnishcpanel /etc/init.d/varnishcpanel
+               chmod 775 /etc/init.d/varnishcpanel
+               chkconfig varnishcpanel on
+echo -e "$GREEN varnishcpanel installation completed $RESET"
 clear
 echo -e "$GREEN startig varnish installation $RESET"
               cd $CUDIR/packages/
@@ -294,7 +275,6 @@ clear
 echo -e "$GREEN Creating cron $RESET"
               $bin_cp -prf /var/spool/cron/root /var/spool/cron/root-bak
               echo "* * * * *  /bin/sh /scripts/restartcheck" >> /var/spool/cron/root
-              echo "0 */4 * * * /usr/sbin/tmpwatch -am 4 /tmp/nginx_client" >> /var/spool/cron/root
               echo '/var/cpanel/users IN_MODIFY,IN_NO_LOOP /scripts/createvhost.pl $#' >>/var/spool/incron/root
               /etc/init.d/incrond restart >/dev/null 2>&1
               /etc/init.d/crond restart >/dev/null 2>&1
@@ -304,9 +284,6 @@ echo -e "$GREEN Building varnish configuration files $RESET"
              /etc/init.d/varnish restart
              /sbin/chkconfig varnish on
              clear
-echo -e "$GREEN  Building Nginx Virtualhost, This may take a while $RESET"
-             /scripts/createvhost.pl; sleep 5
-             echo "Done....."
 
 echo -e "$GREEN switching to Varnish for cPanel $RESET"
                if grep "apache_port"  /var/cpanel/cpanel.config  > /dev/null ; then
@@ -319,11 +296,9 @@ echo -e "$GREEN switching to Varnish for cPanel $RESET"
                /scripts/rebuildhttpdconf >/dev/null 2>&1
                /scripts/restartsrv_httpd >/dev/null 2>&1
                /scripts/installmod-rpf >/dev/null 2>&1
-               /scripts/rebuildnginxconf
 echo -e "$GREEN starting Varnish for cPanel $RESET"
                 ps aux|grep varnish|awk '{print $2}'|xargs kill -9 >/dev/null 2>&1
                /etc/init.d/varnish restart
-               /etc/init.d/nginx restart
                /etc/init.d/httpd restart >/dev/null 2>&1
 echo  -e "$GREEN Checking Firewall $RESET"
                if [ -e "/etc/csf/csf.conf" ]; then

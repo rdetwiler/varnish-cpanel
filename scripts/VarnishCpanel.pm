@@ -4,7 +4,7 @@ eval 'if [ -x /usr/local/cpanel/3rdparty/bin/perl ]; then exec /usr/local/cpanel
 
 #!/usr/bin/perl
 package VarnishCpanel;
-# apachebooster - whmapi.pl                           Copyright(c) 2011 Ndimensionz, Inc.
+# varnishcpanel - whmapi.pl                           Copyright(c) 2011 Ndimensionz, Inc.
 #                                                           All rights Reserved.
 # prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
 # This code is subject to the Ndimensionz  license. Unauthorized copying is prohibited

@@ -1,5 +1,5 @@
 #!/bin/bash
-# apachebooster - purgecache                            Copyright(c) 2011 Ndimensionz, Inc.
+# varnishcpanel - purgecache                            Copyright(c) 2011 Ndimensionz, Inc.
 #                                                           All rights Reserved.
 # prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
 # This code is subject to the GPL  license. Unauthorized copying is prohibited
@@ -12,5 +12,5 @@ done
 if [ -e "/usr/local/varnish/var/varnish/varnish_storage.bin" ]; then
 rm -rf /usr/local/varnish/var/varnish/varnish_storage.bin
 fi
-/etc/init.d/apachebooster restart
+/etc/init.d/varnishcpanel restart
 touch /usr/local/varnish/etc/varnish/restart.file

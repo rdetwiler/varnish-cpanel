@@ -30,12 +30,12 @@ use Data::Dumper ();
                              foreach my $val (@disable) {
                        print FILEE "$val\n";
    }
-    exec(`/root/dev/apachebooster/scripts/varnishvhostexclude`);
-  } else { exec(`/root/dev/apachebooster/scripts/varnishvhostexclude`); }
+    exec(`/root/dev/varnish-cpanel/scripts/varnishvhostexclude`);
+  } else { exec(`/root/dev/varnish-cpanel/scripts/varnishvhostexclude`); }
  
 }
  close FILEE;
-print "<a href=\"./restart_nginx.php\">Click here to restart Varnish for cPanel</a>";
+print "<a href=\"./restart_varnishcpanel.php\">Click here to restart Varnish for cPanel</a>";
 } else {
 
 print "Content-type:text/html\r\n\r\n";

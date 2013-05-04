@@ -7,3 +7,4 @@ node/edit
 test.html
 admin
 nocache
+install.php

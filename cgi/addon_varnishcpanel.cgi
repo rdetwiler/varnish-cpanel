@@ -8,10 +8,10 @@ eval 'if [ -x /usr/local/cpanel/3rdparty/bin/perl ]; then exec /usr/local/cpanel
 # start main
 
 
-$script = "addon_nginx.cgi";
+$script = "addon_varnishcpanel.cgi";
 
 ##Directory containing images files
-$images = "nginx";
+$images = "varnishcpanel";
 
 use lib '/usr/local/cpanel';
 use Whostmgr::ACLS			();
