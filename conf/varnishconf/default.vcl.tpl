@@ -46,17 +46,47 @@ if (!client.ip ~ acl127_0_0_1) {error 405 "Not permitted";}
 return (lookup);
 }
 
+## Default request checks
 if (req.request != "GET" &&
 req.request != "HEAD" &&
-req.request != "POST" &&
 req.request != "PUT" &&
-req.request != "PURGE" &&
-req.request != "DELETE" ) {
+req.request != "POST" &&
+req.request != "TRACE" &&
+req.request != "OPTIONS" &&
+req.request != "DELETE") {
+
+# Non-RFC2616 or CONNECT which is weird.
 return (pipe);
+}
+
+if (req.http.Authorization) {
+return (pass);
+}
+
+## Pass Drupal cron jobs
+if (req.url ~ "cron\.php") {
+return (pass);
+}
+
+# Pass server-status
+if (req.url ~ ".*/server-status$") {
+return (pass);
+}
+
+# Don't cache Drupal's install.php
+if (req.url ~ "install\.php") {
+return (pass);
 }
 
 if (req.request != "GET" && req.request != "HEAD") {
 # We only deal with GET and HEAD by default, the rest get passed direct to backend
+return (pass);
+}
+
+# Don't cache Drupal logged-in user sessions
+# LOGGED_IN is the cookie that earlier version of Pressflow sets
+# VARNISH is the cookie which the varnish.module sets
+if (req.http.Cookie ~ "(VARNISH|DRUPAL_UID|LOGGED_IN)") {
 return (pass);
 }
 
@@ -75,10 +105,6 @@ remove req.http.Cookie;
 unset req.http.Cookie;
 }
 
-if (req.http.Authorization) {
-return (pass);
-}
-
 return (pass);
 }
 
@@ -95,7 +121,7 @@ set beresp.do_esi = false;
 
 set beresp.grace = 5m;
 
-unset beresp.http.expires;
+#unset beresp.http.expires;
 if (req.url ~ "\.(js|css|jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf|pdf|ico)(\?[a-z0-9\=]+)?$" && !(req.url ~ "\.(php)") ) {
 unset beresp.http.set-cookie;
 include  "/usr/local/varnish/etc/varnish/static_file.vcl";
