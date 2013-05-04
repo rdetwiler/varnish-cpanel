@@ -29,7 +29,7 @@ fclose($fh);
 $fh2 = fopen("/usr/local/varnish/etc/varnish/default.vcl",'w' );
 fwrite($fh2,$_POST['newd']);
 fclose($fh2);
-echo "<font color=\"green\">Varnish master configurations updated. You may need to restart ApacheBooster server  now</font>";
+echo "<font color=\"green\">Varnish master configurations updated. You may need to restart Varnish for cPanel server  now</font>";
 }else{
 ?>
 <form action="varnishconfediter.php" method="post">

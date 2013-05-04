@@ -10,7 +10,7 @@ print('
 <div id="mbody">
 <div class="headcontent">
 <div class="menu">
-<a href="index2.php" target="mainframe"><b>ApacheBooster Home</b></a>&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="index2.php" target="mainframe"><b>Varnish for cPanel Home</b></a>&nbsp;&nbsp;&nbsp;&nbsp;
 <br />
 </div></div>
 </div>

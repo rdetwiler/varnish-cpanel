@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/apachebooster.iml" filepath="$PROJECT_DIR$/.idea/apachebooster.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/varnish-cpanel.iml" filepath="$PROJECT_DIR$/.idea/varnish-cpanel.iml" />
     </modules>
   </component>
 </project>

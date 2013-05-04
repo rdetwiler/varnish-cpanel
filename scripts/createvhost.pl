@@ -5,7 +5,7 @@ eval 'if [ -x /usr/local/cpanel/3rdparty/bin/perl ]; then exec /usr/local/cpanel
 #!/usr/bin/perl
 BEGIN { unshift @INC, '/usr/local/cpanel', '/scripts/'; }
 
-use ApacheBooster;
+use VarnishCpanel;
 use Cpanel::DIp         ();
 use Cpanel::Logger;
 my $logger = Cpanel::Logger->new( { alternate_logfile => "/var/log/apachebooster.log" } );

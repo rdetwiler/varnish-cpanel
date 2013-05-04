@@ -1,1 +1,1 @@
-set beresp.ttl = 25m;
+set beresp.ttl = 30m;

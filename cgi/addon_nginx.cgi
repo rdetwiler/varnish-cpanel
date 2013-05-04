@@ -3,7 +3,7 @@ eval 'if [ -x /usr/local/cpanel/3rdparty/bin/perl ]; then exec /usr/local/cpanel
   if 0;
 
 #!/usr/bin/perl
-#WHMADDON::ApacheBooster
+#WHMADDON::VarnishCpanel
 ####################################
 # start main
 

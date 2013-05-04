@@ -1,7 +1,6 @@
 #!/bin/bash
-# apachebooster - updateapachebooster                            Copyright(c) 2011 Ndimensionz, Inc.
-#                                                           All rights Reserved.
-# prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
+# updateavarnishcpanel                            Copyright(c) 2011 Ndimensionz, Inc.
+#                                                 All rights Reserved.
 # This code is subject to the GPL  license. Unauthorized copying is prohibited
 
 export REMOTVERSION=$( /usr/bin/curl -s  http://prajith.in/version.txt )
@@ -12,12 +11,12 @@ if [ $REMOTVERSION ==  $LOCALVERSION ]; then
         echo "Same version. It is uptodate"
 else
         cd /usr/local/src
-        rm -rf /usr/local/src/apachebooster*
-        wget -c http://prajith.in/downloads/apachebooster.tar.gz
-         tar -zxf apachebooster.tar.gz
-        cd apachebooster*
+        rm -rf /usr/local/src/varnish-cpanel*
+        wget -c https://github.com/ivrh/varnish-cpanel/archive/master.zip
+        unzip master.zip
+        cd varnish-cpanel*
         bash install.sh
-        ps aux|grep varnish|awk '{print $2}'|xargs kill -9
+        ps aux | grep varnish | awk '{print $2}' | xargs kill -9
         /etc/init.d/httpd restart
        wget -O /usr/local/cpanel/whostmgr/cgi/nginx/version.txt http://prajith.in/version.txt
         echo "Upgrade completed"

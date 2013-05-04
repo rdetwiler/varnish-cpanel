@@ -1,8 +1,7 @@
 #!/bin/bash
 
-# apachebooster - varnishexclude                            Copyright(c) 2011 Ndimensionz, Inc.
-#                                                           All rights Reserved.
-# prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
+# varnishexclude                            Copyright(c) 2011 Ndimensionz, Inc.
+#                                           All rights Reserved.
 # This code is subject to the GPL  license. Unauthorized copying is prohibited
 
 cat /dev/null > /usr/local/varnish/etc/varnish/url.exclude.vcl

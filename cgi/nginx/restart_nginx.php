@@ -77,14 +77,14 @@ print('
 <p>
 
 <form action="restart_nginx.php" method="post">
-<strong><font color="#0570b9">Restart ApacheBooster Server </font></strong> <input type="submit" name="submit" value="Restart">
+<strong><font color="#0570b9">Restart Varnish for cPanel Server </font></strong> <input type="submit" name="submit" value="Restart">
 </form>
 <?php
 if(isset($_POST['submit'])){
 //  $f=fopen("/usr/local/varnish/etc/varnish/restart.file",'w');
 //fwrite($f,"dummy");
 //        fclose($f);
-//        echo "<b>ApacheBooster restart process is queued, please wait 1 minitue </b><br />";
+//        echo "<b>Varnish for cPanel restart process is queued, please wait 1 minitue </b><br />";
 
 proc_exec("/etc/init.d/apachebooster restart");
 }

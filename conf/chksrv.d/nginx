@@ -1,1 +1,0 @@
-service[nginx]=x,x,x,/etc/init.d/nginx restart,nginx,root

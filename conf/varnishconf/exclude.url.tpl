@@ -1,4 +1,9 @@
 wp-admin
 wp-login.php
 test.html
-index.jpg
+user
+cron.php
+node/edit
+test.html
+admin
+nocache

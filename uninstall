@@ -1,20 +1,12 @@
 #!/bin/bash
 /etc/init.d/varnish stop
-/etc/init.d/nginx stop
-ps aux|grep nginx|grep -v grep|awk '{print $2}'|xargs kill -9 
 /scripts/preeasyapache
-rm -rf /usr/local/nginx/
 rm -rf /usr/local/varnish/
-rm -rvf /usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi
-rm -rvf /usr/local/cpanel/whostmgr/cgi/nginx
 rm -rvf /scripts/postwwwacct
 rm -rvf /scripts/installmod-rpf
-rm -rvf /scripts/installnginx
 rm -rvf /scripts/posteasyapache
 rm -rvf /scripts/preeasyapache
-rm -rvf /scripts/rebuildnginxconf
 rm -rvf /scripts/rebuildvhost
-rm -rvf /etc/ini.d/nginx
 rm -rf /etc/init.d/varnish
 rm -rvf /etc/sysconfig/varnish
 rm -rvf /scripts/genevarnishconf
@@ -26,7 +18,7 @@ rm -rvf /scripts/rebuildvhost-bak
 rm -rvf /scripts/varnishurlexlude
 rm -rvf /scripts/prekillacct
 rm -rvf /scripts/whmapi.pl
-rm -rvf /scripts/updateapachebooster
+rm -rvf /scripts/updatevarnishcpanel
 rm -rvf /scripts/createvhost.pl
 rm -rvf /scripts/ApacheBooster.pm
 rm -rvf /scripts/restartsrv_varnish
@@ -42,20 +34,15 @@ sed -i  's/apache_port=0.0.0.0:82/apache_port=0.0.0.0:80/g'  /var/cpanel/cpanel.
 /usr/local/cpanel/whostmgr/bin/whostmgr2 --updatetweaksettings >/dev/null 2>&1
 /scripts/rebuildhttpdconf
 unset mv
-cat /var/spool/cron/root | egrep -v "checkuserdomains|restartcheck|nginx_client" > /tmp/cron.tmp
 mv -f /tmp/cron.tmp /var/spool/cron/root
 cat /var/spool/incron/root | egrep -v "createvhost.pl" > /var/spool/incron/root
-               /usr/local/cpanel/bin/manage_hooks  del script /scripts/postwwwacct --describe "Apachebooster" --category Whostmgr --event Accounts::Create --stage post >/dev/null 2>&1
-               /usr/local/cpanel/bin/manage_hooks  del script /scripts/prekillacct --describe "Apachebooster" --category Whostmgr --event Accounts::Remove --stage pre >/dev/null 2>&1
-rm -rvf /etc/chkserv.d/nginx
+               /usr/local/cpanel/bin/manage_hooks  del script /scripts/postwwwacct --describe "Varnish for cPanel" --category Whostmgr --event Accounts::Create --stage post >/dev/null 2>&1
+               /usr/local/cpanel/bin/manage_hooks  del script /scripts/prekillacct --describe "Varnish for cPanel" --category Whostmgr --event Accounts::Remove --stage pre >/dev/null 2>&1
 rm -rvf /etc/chkserv.d/varnish
 sed -i "s/82/80/" /etc/chkserv.d/httpd
-sed -i 's/.*nginx.*//g' /etc/chkserv.d/chkservd.conf
 sed -i 's/.*varnish.*//g' /etc/chkserv.d/chkservd.conf
 
 sed -i '/\/etc\/init.*.varnish/d' /etc/init.d/httpd
 sed -i '/\/etc\/init.*.varnish/d' /usr/local/apache/bin/apachectl
-sed -i '/\/etc\/init.*.nginx/d' /etc/init.d/httpd
-sed -i '/\/etc\/init.*.nginx/d' /usr/local/apache/bin/apachectl
 chkconfig apachebooster off
 /scripts/restartsrv_httpd

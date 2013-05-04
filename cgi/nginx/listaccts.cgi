@@ -35,7 +35,7 @@ use Data::Dumper ();
  
 }
  close FILEE;
-print "<a href=\"./restart_nginx.php\">Click here to restart Apachebooster</a>";
+print "<a href=\"./restart_nginx.php\">Click here to restart Varnish for cPanel</a>";
 } else {
 
 print "Content-type:text/html\r\n\r\n";

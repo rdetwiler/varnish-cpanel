@@ -23,9 +23,9 @@ function Nginx_status($status){
 </head>
 <body>
 <div class="content2">
-<strong><font color="#0570b9">Apachebooster Status:</font> <?php Nginx_status("if  pgrep nginx   &> /dev/null; then echo -ne \"<font color=\"green\">Online</font>\"; else echo -ne \"<font color=\"red\">Offline</font>\"; fi "); ?></strong>&nbsp;&nbsp;&nbsp;&nbsp;<strong><font color="#0570b9">ApacheBooster Version: </font><font color="green"><?php echo  shell_exec('cat version.txt'); ?></font></strong><br /> <br /> <br />
+<strong><font color="#0570b9">Varnish for cPanel Status:</font> <?php Nginx_status("if  pgrep nginx   &> /dev/null; then echo -ne \"<font color=\"green\">Online</font>\"; else echo -ne \"<font color=\"red\">Offline</font>\"; fi "); ?></strong>&nbsp;&nbsp;&nbsp;&nbsp;<strong><font color="#0570b9">Varnish for cPanel Version: </font><font color="green"><?php echo  shell_exec('cat version.txt'); ?></font></strong><br /> <br /> <br />
 
-<div  id="contentimg" style="float:left;" ><a href="restart_nginx.php"><img width="45px" height="45px" img src="./images/restartservices.png" alt="alt" border="0"/></a><br/><a href="restart_nginx.php" >Restart ApacheBooster</a></div>
+<div  id="contentimg" style="float:left;" ><a href="restart_nginx.php"><img width="45px" height="45px" img src="./images/restartservices.png" alt="alt" border="0"/></a><br/><a href="restart_nginx.php" >Restart Varnish for cPanel</a></div>
 <div  id="contentimg" style="float:left;"><a href="rebuild_nginx.php"><img  width="45px" height="45px" src="./images/configure.png" alt="alt" border="0"/></a><br/><a href="rebuild_nginx.php" >Rebuild nginx Conf</a></div>
 <div  id="contentimg" style="float:left;"><a href="rebuild_vhost.php"><img width="45px" height="45px"  src="./images/playpause.png" alt="alt" border="0"/></a><br/><a href="rebuild_vhost.php" >Rebuild Vhosts</a></div>
 

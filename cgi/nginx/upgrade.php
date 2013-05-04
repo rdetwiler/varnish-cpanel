@@ -28,8 +28,8 @@ echo "<div class=\"error\"><p>
         <div id="mainindexcontect">
             <div id="clearzone1"></div>
             <div id="welcomemessage">
-        <p><pre>Please upgrade the ApacheBooster package only from Terminal. 
-You can simply upgrade it by running  predefined script: /scripts/updateapachebooster
+        <p><pre>Please upgrade the Varnish for cPanel package only from Terminal.
+You can simply upgrade it by running  predefined script: /scripts/updatevarnishcpanel
 Gmail: prajithpalakkuda@gmail.com
 skype: prajithp80
         </div>

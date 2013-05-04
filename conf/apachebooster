@@ -3,14 +3,11 @@
 # chkconfig: 2345 95 20                               #
 # description: Cpanel integration                     #
 #                                                     #
-# processname: ApacheBooster                          #
+# processname: Varnish for cPanel                          #
 #                                                     #
-#   ApacheBooster init-script                         #
-#   Created by Prajith http://ndimensionz.com         #
+#   Varnish for cPanel init-script                         #
 #######################################################
-NGINX_CONF_FILE="/usr/local/nginx/conf/nginx.conf"
 VARNISH_CONF_FILE="/usr/local/varnish/etc/varnish/default.vcl"
-nginx="/usr/local/nginx/sbin/nginx"
 varnish="/usr/local/varnish/sbin/varnishd"
 apache="/usr/local/apache/bin/apachectl"
 HTTPD=/usr/local/apache/bin/httpd
@@ -20,11 +17,9 @@ STATUSURL="http://localhost:${PORT:-80}/whm-server-status"
 progh=$(basename $HTTPD)
 prog="apachebooster"
 progv=$(basename $varnish)
-progn=$(basename $nginx)
 
 
 apacheinit="/etc/init.d/httpd"
-nginxinit="/etc/init.d/nginx"
 if [ -e "/etc/init.d/varnish" ]; then
 varnishinit="/etc/init.d/varnish"
 else 
@@ -36,13 +31,11 @@ start() {
         echo -n $"Starting $prog: "
         $apacheinit start > /dev/null 2>&1
         sleep 1
-        $nginx -t -c $NGINX_CONF_FILE > /dev/null 2>&1
         retval=$?
         if [ $retval -eq 1 ]; then
         echo
         exit 1
         fi
-        $nginxinit start > /dev/null 2>&1
         retval=$?
         if [ $retval -eq 0 ]
                 then

@@ -3,9 +3,9 @@ eval 'if [ -x /usr/local/cpanel/3rdparty/bin/perl ]; then exec /usr/local/cpanel
   if 0;
 
 #!/usr/bin/perl
-# apachebooster - whmapi.pl                           Copyright(c) 2011 Ndimensionz, Inc.
-#                                                           All rights Reserved.
-# prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
+# whmapi.pl                           Copyright(c) 2011 Ndimensionz, Inc.
+#                                     All rights Reserved.
+#                                     http://ndimensionz.com http://esupports.net
 # This code is subject to the Ndimensionz  license. Unauthorized copying is prohibited
 
 BEGIN{ unshift(@INC, '/usr/local/cpanel'); }
@@ -24,55 +24,59 @@ my $sa = '';
 my $gu = '';
 
 if (getpwuid( $< ) ne 'root') {
-        print "Script needs root privileges \n";
-        exit();
+  print "Script needs root privileges \n";
+  exit();
 }
 
 unless (GetOptions (
                 'sa' => \$sa,
                 'gd=s' => \$gd,
-                'gu=s' => \$gu) or usage()) {    usage();}
+                'gu=s' => \$gu) or usage()) { usage(); }
 
 if ($gd || $sa || $gu) {
-      if ($gd) {
-      getdomaindetails($gd);
-     } elsif ($sa) {
+  if ($gd) {
+    getdomaindetails($gd);
+  } elsif ($sa) {
     usernamedetails();
   } elsif ($gu) {
-     getusername($gu);
-   } else {
-     usage();
-}
+    getusername($gu);
+  } else {
+    usage();
+  }
 } else {
-     usage();
+  usage();
 }
 
 
-sub usage 
-{
-    print << "USAGE"
+sub usage {
+  print << "USAGE"
 
-    usage: /scripts/whmapi.pl [--gd domain or user | --gu user| --sa]
+  usage: /scripts/whmapi.pl [--gd domain or user | --gu user| --sa]
 USAGE
 }
-sub  getdomaindetails 
-{
-     my $domain = shift;
-     foreach my $data  (liveapi("domainuserdata?domain=$domain")->getElementsByTagName('userdata')) {
-       my $documentroot =  $data->getElementsByTagName('documentroot')->item(0)->getFirstChild->getNodeValue;
-       my $ip =  $data->getElementsByTagName('ip')->item(0)->getFirstChild->getNodeValue;
-       my $user = $data->getElementsByTagName('user')->item(0)->getFirstChild->getNodeValue;
-       my $value = $data->getElementsByTagName('serveralias')->item(0);
-       if ($value ne "") {
-          print "ALIAS:" . $data->getElementsByTagName('serveralias')->item(0)->getFirstChild->getNodeValue . "\n";
-        }         
-       if ($user) {
-           print "DOMAIN:$domain\n";
-           print "USER:$user\n";
-           print "DOCUMENTROOT:$documentroot\n";
-           print "IP:$ip\n";
-         }   
-      }
+
+sub  getdomaindetails {
+
+  my $domain = shift;
+
+  foreach my $data  (liveapi("domainuserdata?domain=$domain")->getElementsByTagName('userdata')) {
+
+    my $documentroot =  $data->getElementsByTagName('documentroot')->item(0)->getFirstChild->getNodeValue;
+    my $ip =  $data->getElementsByTagName('ip')->item(0)->getFirstChild->getNodeValue;
+    my $user = $data->getElementsByTagName('user')->item(0)->getFirstChild->getNodeValue;
+    my $value = $data->getElementsByTagName('serveralias')->item(0);
+
+    if ($value ne "") {
+      print "ALIAS:" . $data->getElementsByTagName('serveralias')->item(0)->getFirstChild->getNodeValue . "\n";
+    }
+
+    if ($user) {
+     print "DOMAIN:$domain\n";
+     print "USER:$user\n";
+     print "DOCUMENTROOT:$documentroot\n";
+     print "IP:$ip\n";
+    }
+  }
 }
 
 sub usernamedetails 

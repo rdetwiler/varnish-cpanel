@@ -6,7 +6,6 @@ bin_mkdir=`which mkdir`
 bin_cp=`which cp`
 bin_mv=`which mv`
 bin_rm=`which rm`
-nginx_prefix="/usr/local/nginx"
 varnish_prefix="/usr/local/varnish"
 RED='\033[01;31m'
 GREEN='\033[01;32m'
@@ -29,8 +28,7 @@ fi
 header() {
 clear
 echo -e "$GREEN          ************************************************************$RESET"
-echo -e "$GREEN          *$RESET$WHITE      ApacheBooster Installation V 1.7          $GREEN*$RESET"
-echo -e "$GREEN          *$RESET$WHITE   Copyright (c) 2011-2012  https://www.prajith.in/     $GREEN*$RESET"
+echo -e "$GREEN          *$RESET$WHITE      Varnish for cPanel Installation V 0.1          $GREEN*$RESET"
 echo -e "$GREEN          ************************************************************$RESET"
 echo " "
 echo " "
@@ -64,13 +62,13 @@ echo -e  "Checking cPanel perl modules"
 
 if [ ! -f /usr/local/cpanel/Cpanel/PublicAPI.pm ]; then
                 error
-               echo "Unable to find Cpanel::PublicAPI. This version of ApacheBooster"
+               echo "Unable to find Cpanel::PublicAPI. This version of Varnish for cPanel"
                echo "requires Cpanel::PublicAPI."
                CPVERSION=$(cat /usr/local/cpanel/version)
                echo "You are currently running cPanel version $CPVERSION."
                echo "You should be running at least 11.32 to have Cpanel::PublicAPI."
                echo "Please update cPanel by running /scripts/upcp"
-               echo "and then try installing ApacheBooster  again."
+               echo "and then try installing Varnish for cPanel  again."
                exit;
 fi
 clear
@@ -145,7 +143,7 @@ if [[ "$ALLINSTALLED" != 1 ]]; then
         echo "/scripts/perlinstaller <module_name>"
         echo "for each module name listed above."
         echo "If you are unable to install the perl modules, please contact"
-        echo "ApacheBooster support for assistance."
+        echo "Varnish for cPanel support for assistance."
         echo "Support Address: prajithpalakkuda@gmail.com"
         exit
 else
@@ -154,19 +152,17 @@ fi
 clear
 echo -e "$GREEN Checking for previous installation .. $RESET"
       if [ -e  "/usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi" ]; then
-               echo -e "$GREEN ApacheBooster already installed $RESET"
+               echo -e "$GREEN Varnish for cPanel already installed $RESET"
 clear
 echo -e "$GREEN Backing up current version $RESET"
                cd /root/
-               $bin_mkdir -p /root/apachebooster-archive
-               cd /root/apachebooster-archive
-               $bin_cp -prf $nginx_prefix/conf /root/apachebooster-archive/
-               $bin_cp -prf $nginx_prefix/vhost /root/apachebooster-archive/
-               $bin_cp -prf $varnish_prefix/etc/varnish /root/apachebooster-archive/
-               $bin_cp -prf $varnish_prefix/var /root/apachebooster-archive/
-               $bin_cp -prf /etc/sysconfig/varnish /root/apachebooster-archive/sys.varnish
-               $bin_cp -prf /usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi /root/apachebooster-archive/
-               $bin_cp -prf /usr/local/cpanel/whostmgr/cgi/nginx /root/apachebooster-archive/nginx-cgi
+               $bin_mkdir -p /root/varnish-cpanel-archive
+               cd /root/varnish-cpanel-archive
+               $bin_cp -prf $varnish_prefix/etc/varnish /root/varnish-cpanel-archive/
+               $bin_cp -prf $varnish_prefix/var /root/varnish-cpanel-archive/
+               $bin_cp -prf /etc/sysconfig/varnish /root/varnish-cpanel-archive/sys.varnish
+               $bin_cp -prf /usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi /root/varnish-cpanel-archive/
+               $bin_cp -prf /usr/local/cpanel/whostmgr/cgi/nginx /root/varnish-cpanel-archive/nginx-cgi
                echo -e "Backup completed"
                echo " "
                echo " "
@@ -193,7 +189,7 @@ echo -e "$GREEN Removing olde version $RESET"
                $bin_rm -rvf /scripts/checkuserdomains
                $bin_rm -rvf /scripts/getfilettl
                $bin_rm -rvf /scripts/restartcheck
-               $bin_rm -rvf /scripts/updateapachebooster
+               $bin_rm -rvf /scripts/updatevarnishcpanel
                $bin_rm -rvf /scripts/varnishurlexlude
                $bin_rm -rvf /usr/local/cpanel/hooks/addondomain/addaddondomain
                $bin_rm -rvf /usr/local/cpanel/hooks/subdomain/addsubdomain
@@ -201,7 +197,6 @@ echo -e "$GREEN Removing olde version $RESET"
                $bin_rm -rvf /usr/local/cpanel/hooks/subdomain/delsubdomain
                $bin_rm -rvf /usr/local/cpanel/hooks/park/park
                $bin_rm -rvf /usr/local/cpanel/hooks/park/unpark
-               $bin_rm -rvf $nginx_prefix
                $bin_rm -rvf $varnish_prefix
                cat /var/spool/cron/root | egrep -v "checkuserdomains|restartcheck|tmpwatch" > /tmp/cron.tmp
                mv -f /tmp/cron.tmp /var/spool/cron/root
@@ -240,8 +235,8 @@ echo -e "$GREEN Installing WHM/cPanel hooks $RESET"
                $bin_cp -prvf hooks/delsubdomain    /usr/local/cpanel/hooks/subdomain/delsubdomain
                $bin_cp -prvf hooks/park            /usr/local/cpanel/hooks/park/park
                $bin_cp -prvf hooks/unpark          /usr/local/cpanel/hooks/park/unpark
-               /usr/local/cpanel/bin/manage_hooks  add script /scripts/postwwwacct --describe "Apachebooster" --category Whostmgr --event Accounts::Create --stage post >/dev/null 2>&1
-               /usr/local/cpanel/bin/manage_hooks  add script /scripts/prekillacct --describe "Apachebooster" --category Whostmgr --event Accounts::Remove --stage pre >/dev/null 2>&1
+               /usr/local/cpanel/bin/manage_hooks  add script /scripts/postwwwacct --describe "Varnish for cPanel" --category Whostmgr --event Accounts::Create --stage post >/dev/null 2>&1
+               /usr/local/cpanel/bin/manage_hooks  add script /scripts/prekillacct --describe "Varnish for cPanel" --category Whostmgr --event Accounts::Remove --stage pre >/dev/null 2>&1
 sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/varnish \$ARGV/g" /usr/local/apache/bin/apachectl
 sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/nginx \$ARGV/g" /usr/local/apache/bin/apachectl
 sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/nginx \$ARGV/g" /etc/init.d/httpd
@@ -313,7 +308,7 @@ echo -e "$GREEN  Building Nginx Virtualhost, This may take a while $RESET"
              /scripts/createvhost.pl; sleep 5
              echo "Done....."
 
-echo -e "$GREEN switching to apachebooster $RESET"
+echo -e "$GREEN switching to Varnish for cPanel $RESET"
                if grep "apache_port"  /var/cpanel/cpanel.config  > /dev/null ; then
                sed -i  's/apache_port=0.0.0.0:80/apache_port=0.0.0.0:82/g'  /var/cpanel/cpanel.config
                /usr/local/cpanel/whostmgr/bin/whostmgr2 --updatetweaksettings >/dev/null 2>&1
@@ -325,7 +320,7 @@ echo -e "$GREEN switching to apachebooster $RESET"
                /scripts/restartsrv_httpd >/dev/null 2>&1
                /scripts/installmod-rpf >/dev/null 2>&1
                /scripts/rebuildnginxconf
-echo -e "$GREEN starting apachebooster $RESET"
+echo -e "$GREEN starting Varnish for cPanel $RESET"
                 ps aux|grep varnish|awk '{print $2}'|xargs kill -9 >/dev/null 2>&1
                /etc/init.d/varnish restart
                /etc/init.d/nginx restart
