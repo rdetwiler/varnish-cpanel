@@ -21,7 +21,7 @@ sub vcl_recv {
 
   # Normalize the Accept-Encoding header
   if (req.http.Accept-Encoding) {
-    if (req.url ~ "\.(jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf|flv|pdf|ico)(\?[a-z0-9\=]+)?$") {
+    if (req.url ~ "\.(jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf|flv|pdf|ico)(\?[a-zA-Z0-9\=\.\-]+)?$") {
       # No point in compressing these
       remove req.http.Accept-Encoding;
     } elsif (req.http.Accept-Encoding ~ "gzip") {
@@ -35,7 +35,7 @@ sub vcl_recv {
   }
 
   # Normalize the Vary header
-  if (req.http.Vary ~ "User-Agent" && req.url ~ "\.(jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf|flv|pdf|ico|js|css)(\?[a-z0-9\=]+)?$") {
+  if (req.http.Vary ~ "User-Agent" && req.url ~ "\.(jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf|flv|pdf|ico|js|css)(\?[a-zA-Z0-9\=\.\-]+)?$") {
     set req.http.Vary = regsub(req.http.Vary, "(^|; ) *User-Agent,? *", "\1");
   }
 
@@ -91,7 +91,7 @@ sub vcl_recv {
   }
 
   # Cache things with these extensions
-  if (req.url ~ "\.(js|css|jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf|pdf)(\?[a-z0-9\=]+)?$" && ! (req.url ~ "\.(php)") ) {
+  if (req.url ~ "\.(js|css|jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf|pdf)(\?[a-zA-Z0-9\=\.\-]+)?$" && ! (req.url ~ "\.(php)") ) {
     unset req.http.Cookie;
     return (lookup);
   }
@@ -122,7 +122,7 @@ sub vcl_fetch {
   set beresp.grace = 5m;
 
   #unset beresp.http.expires;
-  if (req.url ~ "\.(js|css|jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf|pdf|ico)(\?[a-z0-9\=]+)?$" && !(req.url ~ "\.(php)") ) {
+  if (req.url ~ "\.(js|css|jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf|pdf|ico)(\?[a-zA-Z0-9\=\.\-]+)?$" && !(req.url ~ "\.(php)") ) {
     unset beresp.http.set-cookie;
     include  "/usr/local/varnish/etc/varnish/static_file.vcl";
   }
