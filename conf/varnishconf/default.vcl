@@ -1,5 +1,3 @@
- 
- 
 include "/usr/local/varnish/etc/varnish/cpanel.backend.vcl";
 include "/usr/local/varnish/etc/varnish/vhost.vcl";
 
