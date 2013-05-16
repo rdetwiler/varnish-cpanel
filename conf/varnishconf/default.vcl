@@ -1,3 +1,5 @@
+ 
+ 
 include "/usr/local/varnish/etc/varnish/cpanel.backend.vcl";
 include "/usr/local/varnish/etc/varnish/vhost.vcl";
 
@@ -21,7 +23,7 @@ sub vcl_recv {
 
   # Normalize the Accept-Encoding header
   if (req.http.Accept-Encoding) {
-    if (req.url ~ "\.(jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf|flv|pdf|ico)(\?[a-zA-Z0-9\=\.\-]+)?$") {
+    if (req.url ~ "\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF|gz|GZ|tgz|TGZ|bz2|BZ2|tbz|TBZ|mp3|MP3|ogg|OGG|swf|SWF|flv|FLV|pdf|PDF|ico|ICO)(\?[a-zA-Z0-9\=\.\-]+)?$") {
       # No point in compressing these
       remove req.http.Accept-Encoding;
     } elsif (req.http.Accept-Encoding ~ "gzip") {
@@ -35,7 +37,7 @@ sub vcl_recv {
   }
 
   # Normalize the Vary header
-  if (req.http.Vary ~ "User-Agent" && req.url ~ "\.(jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf|flv|pdf|ico|js|css|ttf|eot|svg|woff|html)(\?[a-zA-Z0-9\=\.\-]+)?$") {
+  if (req.http.Vary ~ "User-Agent" && req.url ~ "\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF|gz|GZ|tgz|TGZ|bz2|BZ2|tbz|TBZ|mp3|MP3|ogg|OGG|swf|SWF|flv|FLV|pdf|PDF|ico|ICO|js|JS|css|CSS|ttf|TTF|eot|EOT|svg|SVG|woff|WOFF|html|HTML)(\?[a-zA-Z0-9\=\.\-]+)?$") {
     set req.http.Vary = regsub(req.http.Vary, "(^|; ) *User-Agent,? *", "\1");
   }
 
@@ -91,7 +93,7 @@ sub vcl_recv {
   }
 
   # Cache things with these extensions
-  if (req.url ~ "\.(js|css|jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf|pdf|ttf|eot|svg|woff|html)(\?[a-zA-Z0-9\=\.\-]+)?$" && ! (req.url ~ "\.(php)") ) {
+  if (req.url ~ "\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF|gz|GZ|tgz|TGZ|bz2|BZ2|tbz|TBZ|mp3|MP3|ogg|OGG|swf|SWF|flv|FLV|pdf|PDF|ico|ICO|js|JS|css|CSS|ttf|TTF|eot|EOT|svg|SVG|woff|WOFF|html|HTML)(\?[a-zA-Z0-9\=\.\-]+)?$" && ! (req.url ~ "\.(php)") ) {
     unset req.http.Cookie;
     return (lookup);
   }
@@ -105,7 +107,9 @@ sub vcl_recv {
     unset req.http.Cookie;
   }
 
-  return (pass);
+  # Attempt to cache everything else. If at least one cookie exists at this point - the request will not be cached
+  # even though we have lookup below
+  return (lookup);
 }
 
 
@@ -122,7 +126,7 @@ sub vcl_fetch {
   set beresp.grace = 5m;
 
   #unset beresp.http.expires;
-  if (req.url ~ "\.(js|css|jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf|pdf|ico|ttf|eot|svg|woff|html)(\?[a-zA-Z0-9\=\.\-]+)?$" && !(req.url ~ "\.(php)") ) {
+  if (req.url ~ "\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF|gz|GZ|tgz|TGZ|bz2|BZ2|tbz|TBZ|mp3|MP3|ogg|OGG|swf|SWF|flv|FLV|pdf|PDF|ico|ICO|js|JS|css|CSS|ttf|TTF|eot|EOT|svg|SVG|woff|WOFF|html|HTML)(\?[a-zA-Z0-9\=\.\-]+)?$" && !(req.url ~ "\.(php)") ) {
     unset beresp.http.set-cookie;
     include  "/usr/local/varnish/etc/varnish/static_file.vcl";
   }
